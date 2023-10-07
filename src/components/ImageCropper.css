@@ -1,0 +1,53 @@
+body {
+	margin: 0;
+	font-family: sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.example {
+	user-select: none;
+	min-width: 300px;
+	&__cropper-wrapper {
+		background: black;
+	}
+
+	&__cropper {
+		color: #61DAFB;
+		max-height: 500px;
+	}
+
+	&__cropper-background {
+		background: black;
+	}
+
+	&__cropper-wrapper {
+		position: relative;
+	}
+
+	&__buttons-wrapper {
+		display: flex;
+		justify-content: center;
+	}
+
+	&__button {
+		border: none;
+		outline: solid transparent;
+		color: white;
+		font-size: 16px;
+		padding: 10px 20px;
+		background: #36393F;
+		cursor: pointer;
+		transition: background 0.5s;
+		width: 100%;
+		&:hover,
+		&:focus {
+			background: #20232A;
+		}
+		input {
+			display: none;
+		}
+	}
+}
