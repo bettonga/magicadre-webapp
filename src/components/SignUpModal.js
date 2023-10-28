@@ -4,6 +4,8 @@ import { database } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
 import { collection, addDoc } from "firebase/firestore";
 
+import "./modals.css";
+
 export default function SignUpModal() {
   const { modalState, toggleModals, signUp } = useContext(UserContext);
 
@@ -62,79 +64,61 @@ export default function SignUpModal() {
   return (
     <>
       {modalState.signUpModal && (
-        <div className="position-fixed top-0 vw-100 vh-100">
+        <div className="background">
           <div
+            className="background-opacity"
             onClick={() => closeModal()}
-            className="w-100 h-100 bg-dark bg-opacity-75"
           ></div>
-          <div
-            className="position-absolute top-50 start-50 translate-middle"
-            style={{ minWidth: "400px" }}
-          >
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Sign Up</h5>
-                  <button
-                    onClick={() => closeModal()}
-                    className="btn-close"
-                  ></button>
-                </div>
-
-                <div className="modal-body">
-                  <form
-                    ref={formRef}
-                    onSubmit={handleForm}
-                    className="sign-up-form"
-                  >
-                    <div className="mb-3">
-                      <label htmlFor="signUpEmail" className="form-label">
-                        Email adress
-                      </label>
-                      <input
-                        ref={addInputs}
-                        name="email"
-                        required
-                        type="email"
-                        className="form-control"
-                        id="signUpEmail"
-                      ></input>
-                    </div>
-
-                    <div className="mb-3">
-                      <label htmlFor="signUpPwd" className="form-label">
-                        Password
-                      </label>
-                      <input
-                        ref={addInputs}
-                        name="pwd"
-                        required
-                        type="password"
-                        className="form-control"
-                        id="signUpPwd"
-                      ></input>
-                    </div>
-
-                    <div className="mb-3">
-                      <label htmlFor="repeatPwd" className="form-label">
-                        Repeat Password
-                      </label>
-                      <input
-                        ref={addInputs}
-                        name="pwd"
-                        required
-                        type="password"
-                        className="form-control"
-                        id="repeatPwd"
-                      ></input>
-                      <p className="text-danger mt-1">{validation}</p>
-                    </div>
-
-                    <button className="btn btn-primary">Submit</button>
-                  </form>
-                </div>
-              </div>
+          <div className="container-modal">
+            <div className="modal-header">
+              <h1>Se connecter</h1>
+              <button className="close" onClick={() => closeModal()}>
+                &times;
+              </button>
             </div>
+            <form ref={formRef} onSubmit={handleForm}>
+              <div>
+                <label htmlFor="signInEmail">
+                  <b>Adresse mail</b>
+                </label>
+                <input
+                  ref={addInputs}
+                  type="text"
+                  placeholder="Entrer l'adresse mail"
+                  name="email"
+                  id="signInEmail"
+                  required
+                ></input>
+
+                <label htmlFor="signInPwd">
+                  <b>Mot de passe</b>
+                </label>
+                <input
+                  ref={addInputs}
+                  type="password"
+                  placeholder="Entrer le mot de passe"
+                  name="psw"
+                  id="signInPwd"
+                  required
+                ></input>
+
+                <label htmlFor="repeatPwd">
+                  <b>Mot de passe</b>
+                </label>
+                <input
+                  ref={addInputs}
+                  type="password"
+                  placeholder="Entrer à nouveau le mot de passe"
+                  name="psw"
+                  id="repeatPwd"
+                  required
+                ></input>
+              </div>
+              <p className="text-danger">{validation}</p>
+              <button type="submit" className="registerbtn">
+                S'enregistrer
+              </button>
+            </form>
           </div>
         </div>
       )}

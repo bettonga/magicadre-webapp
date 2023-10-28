@@ -2,6 +2,8 @@ import React, { useContext, useRef, useState } from "react";
 import { UserContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
 
+import "./modals.css";
+
 export default function SignInModal() {
   const { modalState, toggleModals, signIn } = useContext(UserContext);
 
@@ -39,65 +41,49 @@ export default function SignInModal() {
   return (
     <>
       {modalState.signInModal && (
-        <div className="position-fixed top-0 vw-100 vh-100">
+        <div className="background">
           <div
+            className="background-opacity"
             onClick={() => closeModal()}
-            className="w-100 h-100 bg-dark bg-opacity-75"
           ></div>
-          <div
-            className="position-absolute top-50 start-50 translate-middle"
-            style={{ minWidth: "400px" }}
-          >
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Sign In</h5>
-                  <button
-                    onClick={() => closeModal()}
-                    className="btn-close"
-                  ></button>
-                </div>
-
-                <div className="modal-body">
-                  <form
-                    ref={formRef}
-                    onSubmit={handleForm}
-                    className="sign-in-form"
-                  >
-                    <div className="mb-3">
-                      <label htmlFor="signInEmail" className="form-label">
-                        Email adress
-                      </label>
-                      <input
-                        ref={addInputs}
-                        name="email"
-                        required
-                        type="email"
-                        className="form-control"
-                        id="signInEmail"
-                      ></input>
-                    </div>
-
-                    <div className="mb-3">
-                      <label htmlFor="signInPwd" className="form-label">
-                        Password
-                      </label>
-                      <input
-                        ref={addInputs}
-                        name="pwd"
-                        required
-                        type="password"
-                        className="form-control"
-                        id="signInPwd"
-                      ></input>
-                      <p className="text-danger mt-1">{validation}</p>
-                    </div>
-
-                    <button className="btn btn-primary">Submit</button>
-                  </form>
-                </div>
-              </div>
+          <div className="container-modal">
+            <div className="modal-header">
+              <h1>Se connecter</h1>
+              <button className="close" onClick={() => closeModal()}>
+                &times;
+              </button>
             </div>
+            <form ref={formRef} onSubmit={handleForm}>
+              <div>
+                <label htmlFor="signInEmail">
+                  <b>Adresse mail</b>
+                </label>
+                <input
+                  ref={addInputs}
+                  type="text"
+                  placeholder="Entrer l'adresse mail"
+                  name="email"
+                  id="signInEmail"
+                  required
+                ></input>
+
+                <label htmlFor="signInPwd">
+                  <b>Mot de passe</b>
+                </label>
+                <input
+                  ref={addInputs}
+                  type="password"
+                  placeholder="Entrer le mot de passe"
+                  name="psw"
+                  id="signInPwd"
+                  required
+                ></input>
+              </div>
+              <p className="text-danger">{validation}</p>
+              <button type="submit" className="registerbtn">
+                Se connecter
+              </button>
+            </form>
           </div>
         </div>
       )}

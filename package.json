@@ -15,7 +15,9 @@
     "react-mobile-cropper": "^0.10.0",
     "react-router-dom": "^6.16.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "react-helmet": "^6.1.0",
+    "prop-types": "15.7.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -40,5 +42,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-scripts": "^5.0.1"
   }
 }

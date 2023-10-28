@@ -7,12 +7,14 @@ import UploadModal from "./components/UploadModal";
 import Private from "./pages/Private/Private";
 import PrivateHome from "./pages/Private/PrivateHome/PrivateHome";
 
+import './style.css'
+
 function App() {
   return (
     <>
       <SignUpModal />
       <SignInModal />
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/private" element={<Private />}>
