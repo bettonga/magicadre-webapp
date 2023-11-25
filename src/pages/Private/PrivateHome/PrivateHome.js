@@ -141,7 +141,7 @@ export default function PrivateHome() {
         const blob = createBinaryFileFromImage(canvas);
         // canvas.toBlob((blob) => {
           // Créer une référence vers le bucket Firebase Storage
-          const filepath = '/' + selectedFrameId + '.bmp';
+          const filepath = '/' + selectedFrameId + '.bin';
           // console.log(filepath)
           const storageRef = ref(storage, filepath);
   
