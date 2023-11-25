@@ -32,13 +32,13 @@ export default function Header(props) {
         {!currentUser ? (
           <>
             <button
-              className="header-login button"
+              className="header-login"
               onClick={() => toggleModals("signIn")}
             >
               {props.Login}
             </button>
             <button
-              className="header-register button"
+              className="header-register"
               onClick={() => toggleModals("signUp")}
             >
               {props.Register}

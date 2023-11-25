@@ -6,6 +6,7 @@ import SignInModal from "./components/SignInModal";
 import UploadModal from "./components/UploadModal";
 import Private from "./pages/Private/Private";
 import PrivateHome from "./pages/Private/PrivateHome/PrivateHome";
+import ForgotModal from "./components/ForgotModal";
 
 import './style.css'
 
@@ -14,12 +15,14 @@ function App() {
     <>
       <SignUpModal />
       <SignInModal />
+      <ForgotModal />
       {/* <Navbar /> */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/private" element={<Private />}>
+        <Route path="/send" element={<PrivateHome />} />
+        {/* <Route path="/private" element={<Private />}>
           <Route path="/private/private-home" element={<PrivateHome />} />
-        </Route>
+        </Route> */}
       </Routes>
     </>
   );

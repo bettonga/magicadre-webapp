@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { UserContext } from "../context/userContext";
-import { ImageCropper } from "../components/ImageCropper";
 import { useNavigate } from "react-router-dom";
 
 import { Helmet } from "react-helmet";
@@ -9,7 +8,7 @@ import Header from "../components/header";
 import "./home.css";
 
 export default function Home(props) {
-  const { toggleUpload, currentUser, toggleUploadModal } =
+  const { toggleModals, currentUser } =
     useContext(UserContext);
   //const userEmail = 'test@test.com'; // Remplacez par l'email de l'utilisateur actuel
 
@@ -31,23 +30,23 @@ export default function Home(props) {
             <br></br>
           </h1>
           <span className="home-text5">
-            Sélectionnez un cadre parmi ceux enregistrés puis choisissez une
-            photo à envoyer
+            {/* Sélectionnez un cadre parmi ceux enregistrés puis choisissez une
+            photo à envoyer */}
           </span>
           <div className="home-container2">
             {currentUser ? (
               <button
                 //onClick={() => toggleUploadModal("upload")}
-                onClick={() => navigate("/private/private-home")}
+                onClick={() => navigate("/send")}
                 className="home-button button"
               >
-                Envoyer une photo !
+                Envoyer une photo
               </button>
             ) : (
               <>
                 <button className="home-button button"
-                  disabled>
-                  Se connecter !
+                  onClick={() => toggleModals("signIn")}>
+                  Se connecter
                 </button>
               </>
             )}

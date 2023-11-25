@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom";
-import React, { useEffect, useRef, useState, ChangeEvent } from "react";
+import React, { useEffect, useRef, useState, ChangeEvent, useContext } from "react";
 import { Cropper, CropperRef } from "react-mobile-cropper";
+import { UserContext } from "../context/userContext";
 import "react-mobile-cropper/dist/style.css";
 import "./ImageCropper.css";
 

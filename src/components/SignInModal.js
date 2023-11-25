@@ -8,6 +8,10 @@ export default function SignInModal() {
   const { modalState, toggleModals, signIn } = useContext(UserContext);
 
   const [validation, setValidation] = useState("");
+  const [forgotPwd, setForgotPwd] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [pwd, setPwd] = useState("");
 
   const navigate = useNavigate();
 
@@ -23,20 +27,30 @@ export default function SignInModal() {
     e.preventDefault();
 
     try {
-      await signIn(inputs.current[0].value, inputs.current[1].value);
+      await signIn(email, pwd);
       formRef.current.reset();
       setValidation("");
       toggleModals("close");
-      navigate("/private/private-home");
+      navigate("/send");
     } catch (err) {
-      setValidation("Email and/or password incorrect, please reload the page");
+      // setValidation("Email and/or password incorrect, please reload the page");
+      setForgotPwd(true);
     }
   };
 
   const closeModal = () => {
     setValidation("");
+    setForgotPwd(false);
     toggleModals("close");
   };
+
+  const handleChangeEmail = (event) => {
+    setEmail(event.target.value);
+  }
+
+  const handleChangePwd = (event) => {
+    setPwd(event.target.value);
+  }
 
   return (
     <>
@@ -53,6 +67,10 @@ export default function SignInModal() {
                 &times;
               </button>
             </div>
+            <div style={{ marginBottom: 12 }}>
+              <span> Pas de compte ? Cliquer</span>
+              <button onClick={() => { closeModal(); toggleModals("signUp"); }} style={{ color: "blue" }} > ici </button>
+            </div>
             <form ref={formRef} onSubmit={handleForm}>
               <div>
                 <label htmlFor="signInEmail">
@@ -65,6 +83,8 @@ export default function SignInModal() {
                   name="email"
                   id="signInEmail"
                   required
+                  value={email}
+                  onChange={handleChangeEmail}
                 ></input>
 
                 <label htmlFor="signInPwd">
@@ -77,12 +97,18 @@ export default function SignInModal() {
                   name="psw"
                   id="signInPwd"
                   required
+                  value={pwd}
+                  onChange={handleChangePwd}
                 ></input>
+                <p className="text-danger">{validation}</p>
               </div>
-              <p className="text-danger">{validation}</p>
               <button type="submit" className="registerbtn">
                 Se connecter
               </button>
+              {forgotPwd && (<div>
+                <span>Mot de passe oublié ? Cliquer</span>
+                <button onClick={() => { closeModal(); toggleModals("forgot"); }} style={{ color: "blue" }} > ici </button>
+              </div>)}
             </form>
           </div>
         </div>

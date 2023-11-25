@@ -14,7 +14,7 @@
   min-height: 80vh;
   align-items: center;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
 }
 .home-container1 {
   display: flex;
