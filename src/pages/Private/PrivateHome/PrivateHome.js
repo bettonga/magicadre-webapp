@@ -1,4 +1,4 @@
-import React, { useRef, useState, ChangeEvent, useContext } from "react";
+import React, { useRef, useState, ChangeEvent, useContext, useEffect } from "react";
 // import { ImageCropper } from "../../../components/ImageCropper";
 import { Cropper } from "react-mobile-cropper";
 import { Helmet } from 'react-helmet'
@@ -26,6 +26,15 @@ export default function PrivateHome() {
   const [image, setImage] = useState("");
 
   const [defaultImage, setDefaultImage] = useState(require("./logo512.png"));
+
+  useEffect(() => {
+    // Revoke the object URL, to allow the garbage collector to destroy the uploaded before file
+    return () => {
+      if (image) {
+        setValidation("");
+      }
+    };
+  }, [selectedFrameId, errorMsg, image]);
 
   const onUpload = () => {
     if (inputRef.current) {
