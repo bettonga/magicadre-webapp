@@ -223,8 +223,17 @@ function createBinaryFileFromImage(canvas) {
     }
   }
 
+  const packedData = [];
+  for (let i = 0; i < binaryData.length; i += 2) {
+    const firstNibble = binaryData[i];
+    const secondNibble = i + 1 < binaryData.length ? binaryData[i + 1] : 0;
+
+    const combinedByte = (firstNibble << 4) | secondNibble;
+    packedData.push(combinedByte);
+  }
+
   // Convertir les valeurs binaires en un fichier binaire
-  const binaryFile = new Uint8Array(binaryData);
+  const binaryFile = new Uint8Array(packedData);
 
   // Enregistrement du fichier binaire
   const blob = new Blob([binaryFile], { type: 'application/octet-stream' });
