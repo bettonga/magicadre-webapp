@@ -13,6 +13,10 @@ export default function SignUpModal() {
 
   const navigate = useNavigate();
 
+  const [email, setEmail] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [rptPwd, setRptPwd] = useState("");
+
   const inputs = useRef([]);
   const addInputs = (el) => {
     if (el && !inputs.current.includes(el)) {
@@ -22,39 +26,35 @@ export default function SignUpModal() {
   const formRef = useRef();
 
   const handleForm = async (e) => {
+    setValidation("");
     e.preventDefault();
 
-    if (inputs.current[1].value.length !== inputs.current[2].value.length) {
+    if (pwd !== rptPwd) {
       setValidation("Passwords do not match");
-    } else if (
-      (inputs.current[1].value.length || inputs.current[2].value.length) < 6
-    ) {
+    } else if (pwd.length < 6) {
       setValidation("Password should be at least 6 characters long");
     }
+    else {
+      try {
+        const cred = await signUp(
+          email.toLowerCase(),
+          pwd
+        );
 
-    try {
-      const cred = await signUp(
-        inputs.current[0].value,
-        inputs.current[1].value
-      );
-      // Add a new document with a generated id.
-      // const docRef = await addDoc(collection(database, "users"), {
-      //   email: inputs.current[0].value,
-      //   reg_frames: [],
-      // });
-      const docRef = await setDoc(doc(database, "users", inputs.current[0].value),{
-        reg_frames: [],
-    })
-      formRef.current.reset();
-      setValidation("");
-      toggleModals("close");
-      navigate("/send");
-    } catch (err) {
-      if (err.code === "auth/invalid-email") {
-        setValidation("Email format is invalid");
-      }
-      if (err.code === "auth/email-already-in-use") {
-        setValidation("Email already used");
+        const docRef = await setDoc(doc(database, "users", email.toLowerCase()),{
+          reg_frames: [],
+      })
+        formRef.current.reset();
+        setValidation("");
+        toggleModals("close");
+        navigate("/send");
+      } catch (err) {
+        if (err.code === "auth/invalid-email") {
+          setValidation("Email format is invalid");
+        }
+        if (err.code === "auth/email-already-in-use") {
+          setValidation("Email already used");
+        }
       }
     }
   };
@@ -63,6 +63,18 @@ export default function SignUpModal() {
     setValidation("");
     toggleModals("close");
   };
+
+  const handleChangeEmail = (event) => {
+    setEmail(event.target.value);
+  }
+
+  const handleChangePwd = (event) => {
+    setPwd(event.target.value);
+  }
+
+  const handleChangeRptPwd = (event) => {
+    setRptPwd(event.target.value);
+  }
 
   return (
     <>
@@ -86,6 +98,7 @@ export default function SignUpModal() {
                 </label>
                 <input
                   ref={addInputs}
+                  onChange={handleChangeEmail}
                   type="text"
                   placeholder="Entrer l'adresse mail"
                   name="email"
@@ -98,6 +111,7 @@ export default function SignUpModal() {
                 </label>
                 <input
                   ref={addInputs}
+                  onChange={handleChangePwd}
                   type="password"
                   placeholder="Entrer le mot de passe"
                   name="psw"
@@ -110,6 +124,7 @@ export default function SignUpModal() {
                 </label>
                 <input
                   ref={addInputs}
+                  onChange={handleChangeRptPwd}
                   type="password"
                   placeholder="Entrer à nouveau le mot de passe"
                   name="psw"
