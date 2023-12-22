@@ -29,8 +29,7 @@ export default function SignInModal() {
     try {
       await signIn(email, pwd);
       formRef.current.reset();
-      setValidation("");
-      toggleModals("close");
+      closeModal();
       navigate("/send");
     } catch (err) {
       // setValidation("Email and/or password incorrect, please reload the page");
@@ -41,16 +40,18 @@ export default function SignInModal() {
   const closeModal = () => {
     setValidation("");
     setForgotPwd(false);
+    setEmail("");
+    setPwd("");
     toggleModals("close");
   };
 
   const handleChangeEmail = (event) => {
     setEmail(event.target.value);
-  }
+  };
 
   const handleChangePwd = (event) => {
     setPwd(event.target.value);
-  }
+  };
 
   return (
     <>

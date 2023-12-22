@@ -15,6 +15,8 @@ export default function SignUpModal() {
 
   const navigate = useNavigate();
 
+  const [email, setEmail] = useState("");
+
   const inputs = useRef([]);
   const addInputs = (el) => {
     if (el && !inputs.current.includes(el)) {
@@ -24,9 +26,8 @@ export default function SignUpModal() {
   const formRef = useRef();
 
   const handleForm = async (e) => {
-    e.preventDefault();
-    const userEmail = inputs.current[0].value;    
-    sendPasswordResetEmail(auth,userEmail).then(function() {
+    e.preventDefault();  
+    sendPasswordResetEmail(auth,email).then(function() {
       toggleModals("close");
     }).catch(function(error) {
       // An error happened.
@@ -35,7 +36,12 @@ export default function SignUpModal() {
 
   const closeModal = () => {
     setValidation("");
+    setEmail("");
     toggleModals("close");
+  };
+
+  const handleChangeEmail = (event) => {
+    setEmail(event.target.value);
   };
 
   return (
@@ -60,6 +66,7 @@ export default function SignUpModal() {
                 </label>
                 <input
                   ref={addInputs}
+                  onChange={handleChangeEmail}
                   type="text"
                   placeholder="Entrer l'adresse mail"
                   name="email"

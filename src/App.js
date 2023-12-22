@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+// import { Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import SignUpModal from "./components/SignUpModal";
@@ -16,16 +17,28 @@ function App() {
       <SignUpModal />
       <SignInModal />
       <ForgotModal />
-      {/* <Navbar /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/send" element={<PrivateHome />} />
-        {/* <Route path="/private" element={<Private />}>
-          <Route path="/private/private-home" element={<PrivateHome />} />
-        </Route> */}
       </Routes>
     </>
   );
 }
+
+// function App() {
+//   return (
+//     <Router>
+//       <>
+//         <SignUpModal />
+//         <SignInModal />
+//         <ForgotModal />
+//         <Routes>
+//           <Route path="/" element={<Home />} />
+//           <Route path="/send" element={<PrivateHome />} />
+//         </Routes>
+//       </>
+//     </Router>
+//   );
+// }
 
 export default App;

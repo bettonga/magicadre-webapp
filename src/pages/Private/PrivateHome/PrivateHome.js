@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import { storage } from "../../../firebase-config";
 import { ref, uploadBytes } from "firebase/storage";
 import { UserContext } from '../../../context/userContext';
-import { Image } from "image-js";
+import { useNavigate } from "react-router-dom";
 
 
 import Header from '../../../components/header'
@@ -17,7 +17,7 @@ export default function PrivateHome() {
   const inputRef = useRef(null);
   const cropperRef = useRef();
 
-  const { selectedFrameId } = useContext(UserContext);
+  const { selectedFrameId, currentUser } = useContext(UserContext);
 
   const [validation, setValidation] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -25,7 +25,9 @@ export default function PrivateHome() {
   // const [image, setImage] = useState(require("./logo512.png"));
   const [image, setImage] = useState("");
 
-  const [defaultImage, setDefaultImage] = useState(require("./logo512.png"));
+  const [defaultImage] = useState(require("./logo512.png"));
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Revoke the object URL, to allow the garbage collector to destroy the uploaded before file
@@ -45,7 +47,7 @@ export default function PrivateHome() {
   const palette = [
     [0, 0, 0],       // Noir
     [255, 255, 255], // Blanc
-    [0, 255, 0],     // Vert
+    [0, 128, 0],     // Vert
     [0, 0, 255],     // Bleu
     [255, 0, 0],     // Rouge
     [255, 255, 0],   // Jaune
@@ -246,7 +248,7 @@ function createBinaryFileFromImage(canvas) {
 
   // Enregistrement du fichier binaire
   const blob = new Blob([binaryFile], { type: 'application/octet-stream' });
-  const url = URL.createObjectURL(blob);
+  // const url = URL.createObjectURL(blob);
 
   // Télécharger le fichier (facultatif - à des fins de démonstration)
   // const link = document.createElement('a');
@@ -287,10 +289,10 @@ function createBinaryFileFromImage(canvas) {
   return (
     <div className="private-home-container">
       <Helmet>
-        <title>PrivateHome - Dependable Regal Lobster</title>
+        <title>Magicadre</title>
         <meta
           property="og:title"
-          content="PrivateHome - Dependable Regal Lobster"
+          content="Magicadre"
         />
       </Helmet>
       <Header rootClassName="header-root-class-name"></Header>

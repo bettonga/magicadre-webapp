@@ -17,7 +17,7 @@ export default function Home(props) {
   return (
     <div className="home-container">
       <Helmet>
-        <title>Magicadre - Home</title>
+        <title>Magicadre</title>
         <meta property="og:title" content="Magicadre" />
       </Helmet>
       <Header rootClassName="header-root-class-name1"></Header>

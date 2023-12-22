@@ -45,8 +45,7 @@ export default function SignUpModal() {
           reg_frames: [],
       })
         formRef.current.reset();
-        setValidation("");
-        toggleModals("close");
+        closeModal();
         navigate("/send");
       } catch (err) {
         if (err.code === "auth/invalid-email") {
@@ -61,20 +60,23 @@ export default function SignUpModal() {
 
   const closeModal = () => {
     setValidation("");
+    setEmail("");
+    setPwd("");
+    setRptPwd("");
     toggleModals("close");
   };
 
   const handleChangeEmail = (event) => {
     setEmail(event.target.value);
-  }
+  };
 
   const handleChangePwd = (event) => {
     setPwd(event.target.value);
-  }
+  };
 
   const handleChangeRptPwd = (event) => {
     setRptPwd(event.target.value);
-  }
+  };
 
   return (
     <>
