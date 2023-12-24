@@ -145,6 +145,52 @@ export default function PrivateHome() {
     return canvas;
   };
 
+  const rescaleImageWithAdjustments = (canvas, targetWidth, targetHeight, brightness, contrast, rotate180) => {
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = targetWidth;
+    tempCanvas.height = targetHeight;
+  
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
+  
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+  
+    const ctx = canvas.getContext('2d');
+  
+    // Redimensionnement de l'image
+    ctx.drawImage(tempCanvas, 0, 0);
+  
+    // Ajustement de la luminosité et du contraste
+    const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
+    const data = imageData.data;
+  
+    for (let i = 0; i < data.length; i += 4) {
+      // Ajustement de la luminosité
+      data[i] += brightness;
+  
+      // Ajustement du contraste
+      const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+      data[i] = factor * (data[i] - 128) + 128;
+  
+      // Assurer que les valeurs sont comprises entre 0 et 255
+      data[i] = Math.max(0, Math.min(255, data[i]));
+      data[i + 1] = Math.max(0, Math.min(255, data[i + 1]));
+      data[i + 2] = Math.max(0, Math.min(255, data[i + 2]));
+    }
+  
+    ctx.putImageData(imageData, 0, 0);
+  
+    // Rotation de l'image de 180 degrés si rotate180 est true
+    if (rotate180) {
+      ctx.translate(targetWidth / 2, targetHeight / 2);
+      ctx.rotate(Math.PI);
+      ctx.drawImage(canvas, -targetWidth / 2, -targetHeight / 2, targetWidth, targetHeight);
+    }
+  
+    return canvas;
+  };
+
   const uploadImageToFirebase = async (canvas) => {
     // Convertir le canvas en un Blob au format image/png
     if (image!==""){
@@ -250,7 +296,7 @@ function createBinaryFileFromImage(canvas) {
   const blob = new Blob([binaryFile], { type: 'application/octet-stream' });
   // const url = URL.createObjectURL(blob);
 
-  // Télécharger le fichier (facultatif - à des fins de démonstration)
+  // // Télécharger le fichier (facultatif - à des fins de démonstration)
   // const link = document.createElement('a');
   // link.href = url;
   // link.download = 'image.bin';
@@ -267,14 +313,15 @@ function createBinaryFileFromImage(canvas) {
       const canvas = cropper.getCanvas();
       if (canvas) {
         // Étape 1: Scaling de l'image
-        rescaleImage(canvas, 800, 480);
+        // rescaleImage(canvas, 800, 480);
+        rescaleImageWithAdjustments(canvas, 800, 480, 0, 30, true);
         applyFloydSteinberg(canvas);
         uploadImageToFirebase(canvas);
       }
-      // const newTab = window.open();
-      // if (newTab && canvas) {
-      //   newTab.document.body.innerHTML = `<img src="${canvas.toDataURL()}"></img>`;
-      // }
+      const newTab = window.open();
+      if (newTab && canvas) {
+        newTab.document.body.innerHTML = `<img src="${canvas.toDataURL()}"></img>`;
+      }
     }
   };
 
