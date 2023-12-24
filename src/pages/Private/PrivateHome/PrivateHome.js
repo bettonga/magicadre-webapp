@@ -318,10 +318,10 @@ function createBinaryFileFromImage(canvas) {
         applyFloydSteinberg(canvas);
         uploadImageToFirebase(canvas);
       }
-      const newTab = window.open();
-      if (newTab && canvas) {
-        newTab.document.body.innerHTML = `<img src="${canvas.toDataURL()}"></img>`;
-      }
+      // const newTab = window.open();
+      // if (newTab && canvas) {
+      //   newTab.document.body.innerHTML = `<img src="${canvas.toDataURL()}"></img>`;
+      // }
     }
   };
 
