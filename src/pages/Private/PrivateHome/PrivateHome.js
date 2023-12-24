@@ -314,7 +314,7 @@ function createBinaryFileFromImage(canvas) {
       if (canvas) {
         // Étape 1: Scaling de l'image
         // rescaleImage(canvas, 800, 480);
-        rescaleImageWithAdjustments(canvas, 800, 480, 0, 30, true);
+        rescaleImageWithAdjustments(canvas, 800, 480, 0, 60, true);
         applyFloydSteinberg(canvas);
         uploadImageToFirebase(canvas);
       }
