@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet'
 import { storage } from "../../../firebase-config";
 import { ref, uploadBytes } from "firebase/storage";
 import { UserContext } from '../../../context/userContext';
-import { useNavigate } from "react-router-dom";
 
 
 import Header from '../../../components/header'
@@ -27,8 +26,6 @@ export default function PrivateHome() {
 
   const [defaultImage] = useState(require("./logo512.png"));
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     // Revoke the object URL, to allow the garbage collector to destroy the uploaded before file
     return () => {
@@ -37,12 +34,6 @@ export default function PrivateHome() {
       }
     };
   }, [selectedFrameId, errorMsg, image]);
-
-  const onUpload = () => {
-    if (inputRef.current) {
-      inputRef.current.click();
-    }
-  };
 
   const palette = [
     [0, 0, 0],       // Noir
@@ -128,95 +119,70 @@ export default function PrivateHome() {
     data[idx + 2] = Math.max(0, Math.min(255, data[idx + 2] + errB * factor));
   };
 
-  const rescaleImage = (canvas, targetWidth, targetHeight) => {
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = targetWidth;
-    tempCanvas.height = targetHeight;
-
-    const tempCtx = tempCanvas.getContext('2d');
-    tempCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
-
-    canvas.width = targetWidth;
-    canvas.height = targetHeight;
-
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(tempCanvas, 0, 0);
-
-    return canvas;
-  };
-
   const rescaleImageWithAdjustments = (canvas, targetWidth, targetHeight, brightness, contrast, rotate180) => {
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = targetWidth;
     tempCanvas.height = targetHeight;
-  
+
     const tempCtx = tempCanvas.getContext('2d');
     tempCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
-  
+
     canvas.width = targetWidth;
     canvas.height = targetHeight;
-  
+
     const ctx = canvas.getContext('2d');
-  
+
     // Redimensionnement de l'image
     ctx.drawImage(tempCanvas, 0, 0);
-  
+
     // Ajustement de la luminosité et du contraste
     const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
     const data = imageData.data;
-  
+
     for (let i = 0; i < data.length; i += 4) {
       // Ajustement de la luminosité
       data[i] += brightness;
-  
+
       // Ajustement du contraste
       const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
       data[i] = factor * (data[i] - 128) + 128;
-  
+
       // Assurer que les valeurs sont comprises entre 0 et 255
       data[i] = Math.max(0, Math.min(255, data[i]));
       data[i + 1] = Math.max(0, Math.min(255, data[i + 1]));
       data[i + 2] = Math.max(0, Math.min(255, data[i + 2]));
     }
-  
+
     ctx.putImageData(imageData, 0, 0);
-  
+
     // Rotation de l'image de 180 degrés si rotate180 est true
     if (rotate180) {
       ctx.translate(targetWidth / 2, targetHeight / 2);
       ctx.rotate(Math.PI);
       ctx.drawImage(canvas, -targetWidth / 2, -targetHeight / 2, targetWidth, targetHeight);
     }
-  
+
     return canvas;
   };
 
   const uploadImageToFirebase = async (canvas) => {
     // Convertir le canvas en un Blob au format image/png
-    if (image!==""){
+    if (image !== "") {
       if (selectedFrameId !== "") {
         const blob = createBinaryFileFromImage(canvas);
-        // canvas.toBlob((blob) => {
-          // Créer une référence vers le bucket Firebase Storage
-          const filepath = '/' + selectedFrameId + '.bin';
-          // console.log(filepath)
-          const storageRef = ref(storage, filepath);
-  
-          // Chemin complet pour le fichier dans le storage Firebase
-          // const fileRef = storageRef.child(fileName);
-  
-          // Upload du Blob (l'image) sur Firebase Storage
-          uploadBytes(storageRef, blob).then((snapshot) => {
-            console.log('Uploaded a blob or file!');
-            setErrorMsg("");
-            setValidation("photo envoyée !");
-          }).catch((error) => {
-            console.error('Error uploading image:', error);
-            setErrorMsg("la photo n'a pas été envoyée");
-            setValidation("");
-          });
-        // });
-        // }, 'image/bmp');
+        const filepath = '/' + selectedFrameId + '.bin';
+        const storageRef = ref(storage, filepath);
+
+        // Upload du Blob (l'image) sur Firebase Storage
+        uploadBytes(storageRef, blob).then((snapshot) => {
+          console.log('Uploaded a blob or file!');
+          setErrorMsg("");
+          setValidation("photo envoyée !");
+        }).catch((error) => {
+          console.error('Error uploading image:', error);
+          setErrorMsg("la photo n'a pas été envoyée");
+          setValidation("");
+        });
       }
       else {
         setErrorMsg("aucun cadre sélectionné, appuyer sur + pour en ajouter un");
@@ -230,81 +196,73 @@ export default function PrivateHome() {
   };
 
   // Tableau de correspondance des couleurs selon la palette spécifiée
-const colorMap = {
-  [0b0000]: [0, 0, 0],        // Noir
-  [0b0001]: [255, 255, 255],  // Blanc
-  [0b0010]: [0, 255, 0],      // Vert
-  [0b0011]: [0, 0, 255],      // Bleu
-  [0b0100]: [255, 0, 0],      // Rouge
-  [0b0101]: [255, 255, 0],    // Jaune
-  [0b0110]: [255, 170, 0]     // Orange
-};
+  const colorMap = {
+    [0b0000]: [0, 0, 0],        // Noir
+    [0b0001]: [255, 255, 255],  // Blanc
+    [0b0010]: [0, 255, 0],      // Vert
+    [0b0011]: [0, 0, 255],      // Bleu
+    [0b0100]: [255, 0, 0],      // Rouge
+    [0b0101]: [255, 255, 0],    // Jaune
+    [0b0110]: [255, 170, 0]     // Orange
+  };
 
-// Fonction pour convertir une couleur RGB en une valeur binaire selon la palette
-function getColorIndex(rgb) {
-  let minDistance = Infinity;
-  let closestColorIndex = 0;
+  // Fonction pour convertir une couleur RGB en une valeur binaire selon la palette
+  function getColorIndex(rgb) {
+    let minDistance = Infinity;
+    let closestColorIndex = 0;
 
-  for (const [index, color] of Object.entries(colorMap)) {
-    const distance = Math.sqrt(
-      Math.pow(rgb[0] - color[0], 2) +
-      Math.pow(rgb[1] - color[1], 2) +
-      Math.pow(rgb[2] - color[2], 2)
-    );
+    for (const [index, color] of Object.entries(colorMap)) {
+      const distance = Math.sqrt(
+        Math.pow(rgb[0] - color[0], 2) +
+        Math.pow(rgb[1] - color[1], 2) +
+        Math.pow(rgb[2] - color[2], 2)
+      );
 
-    if (distance < minDistance) {
-      minDistance = distance;
-      closestColorIndex = index;
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestColorIndex = index;
+      }
     }
+
+    return closestColorIndex;
   }
 
-  return closestColorIndex;
-}
+  // Fonction pour créer un fichier binaire basé sur les couleurs de l'image
+  function createBinaryFileFromImage(canvas) {
+    const ctx = canvas.getContext('2d');
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    const width = canvas.width;
+    const height = canvas.height;
 
-// Fonction pour créer un fichier binaire basé sur les couleurs de l'image
-function createBinaryFileFromImage(canvas) {
-  const ctx = canvas.getContext('2d');
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imageData.data;
-  const width = canvas.width;
-  const height = canvas.height;
+    const binaryData = [];
 
-  const binaryData = [];
-
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const idx = (y * width + x) * 4;
-      const pixelColor = [data[idx], data[idx + 1], data[idx + 2]];
-      const colorIndex = getColorIndex(pixelColor);
-      binaryData.push(colorIndex);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const idx = (y * width + x) * 4;
+        const pixelColor = [data[idx], data[idx + 1], data[idx + 2]];
+        const colorIndex = getColorIndex(pixelColor);
+        binaryData.push(colorIndex);
+      }
     }
+
+    const packedData = [];
+    for (let i = 0; i < binaryData.length; i += 2) {
+      const firstNibble = binaryData[i];
+      const secondNibble = i + 1 < binaryData.length ? binaryData[i + 1] : 0;
+
+      const combinedByte = (firstNibble << 4) | secondNibble;
+      packedData.push(combinedByte);
+    }
+
+    // Convertir les valeurs binaires en un fichier binaire
+    const binaryFile = new Uint8Array(packedData);
+
+    // Enregistrement du fichier binaire
+    const blob = new Blob([binaryFile], { type: 'application/octet-stream' });
+
+    return blob;
   }
-
-  const packedData = [];
-  for (let i = 0; i < binaryData.length; i += 2) {
-    const firstNibble = binaryData[i];
-    const secondNibble = i + 1 < binaryData.length ? binaryData[i + 1] : 0;
-
-    const combinedByte = (firstNibble << 4) | secondNibble;
-    packedData.push(combinedByte);
-  }
-
-  // Convertir les valeurs binaires en un fichier binaire
-  const binaryFile = new Uint8Array(packedData);
-
-  // Enregistrement du fichier binaire
-  const blob = new Blob([binaryFile], { type: 'application/octet-stream' });
-  // const url = URL.createObjectURL(blob);
-
-  // // Télécharger le fichier (facultatif - à des fins de démonstration)
-  // const link = document.createElement('a');
-  // link.href = url;
-  // link.download = 'image.bin';
-  // link.click();
-
-  // Retourner le fichier binaire
-  return blob;
-}
 
 
   const onCrop = () => {
@@ -312,12 +270,11 @@ function createBinaryFileFromImage(canvas) {
     if (cropper) {
       const canvas = cropper.getCanvas();
       if (canvas) {
-        // Étape 1: Scaling de l'image
-        // rescaleImage(canvas, 800, 480);
         rescaleImageWithAdjustments(canvas, 800, 480, 0, 60, true);
         applyFloydSteinberg(canvas);
         uploadImageToFirebase(canvas);
       }
+      // Décommenter pour visualiser la photo envoyée
       // const newTab = window.open();
       // if (newTab && canvas) {
       //   newTab.document.body.innerHTML = `<img src="${canvas.toDataURL()}"></img>`;
@@ -325,12 +282,13 @@ function createBinaryFileFromImage(canvas) {
     }
   };
 
-  const onLoadImage = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files && event.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
+  const handleImageChange = (event) => {
+    const selectedImage = event.target.files[0];
+    if (selectedImage) {
+      // Convertir l'image sélectionnée en URL
+      const imageUrl = URL.createObjectURL(selectedImage);
+      setImage(imageUrl);
     }
-    event.target.value = "";
   };
 
   return (
@@ -346,22 +304,22 @@ function createBinaryFileFromImage(canvas) {
       <div className="private-home-hero">
         <div className="private-home-container1">
           {image !== "" ? (
-          <Cropper
-            ref={cropperRef}
-            src={image}
-            className={'cropper'}
-            stencilProps={{
-              aspectRatio: 800 / 480
-            }}
-          />) : (
-          <Cropper
-            ref={cropperRef}
-            src={defaultImage}
-            className={'cropper'}
-            stencilProps={{
-              aspectRatio: 800 / 480
-            }}
-          />)}
+            <Cropper
+              ref={cropperRef}
+              src={image}
+              className={'cropper'}
+              stencilProps={{
+                aspectRatio: 800 / 480
+              }}
+            />) : (
+            <Cropper
+              ref={cropperRef}
+              src={defaultImage}
+              className={'cropper'}
+              stencilProps={{
+                aspectRatio: 800 / 480
+              }}
+            />)}
         </div>
         <div className="private-home-container2">
           <h1 className="private-home-text1">
@@ -372,22 +330,18 @@ function createBinaryFileFromImage(canvas) {
           </h2>
           <Dropdown />
           <div className="private-home-btn-group1">
-            <label className="private-home-button2 button"
-              onClick={onUpload}>
+            <label className="private-home-button2 button">
               <input
-                ref={inputRef}
                 type="file"
                 accept="image/*"
-                onChange={onLoadImage}
+                onChange={handleImageChange}
               />
               Choisir une photo
             </label>
-            {/* {image && ( */}
             <button className="private-home-button3 button"
               onClick={onCrop}>
               Envoyer
             </button>
-            {/* )} */}
           </div>
           <p className="text-valid">{validation}</p>
           <p className="text-danger">{errorMsg}</p>
